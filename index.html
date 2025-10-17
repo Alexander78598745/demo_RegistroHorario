@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEMO - Registro Horario Laboral</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="logo-redes_Transparente-216x216.png" alt="Logo" class="logo">
+            <h1>DEMO - Registro Horario Laboral</h1>
+            <div class="schedule-info">
+                <div class="schedule-item">
+                    <i class="fas fa-building"></i>
+                    <span><strong>PLANTA EXTERNA:</strong> 08:00 - 14:00 / 15:00 - 17:00</span>
+                </div>
+                <div class="schedule-item">
+                    <i class="fas fa-desktop"></i>
+                    <span><strong>OFICINA:</strong> 08:00 - 16:00</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Restricción de tiempo (oculta en demo) -->
+        <div class="time-restriction" id="timeRestriction">
+            <div class="restriction-content">
+                <i class="fas fa-clock"></i>
+                <h2>Acceso Restringido</h2>
+                <p>La aplicación solo está disponible después de las 18:00 horas.</p>
+                <div class="current-time" id="currentTime"></div>
+            </div>
+        </div>
+
+        <!-- Menú principal -->
+        <nav class="main-menu" id="mainMenu" style="display: none;">
+            <div class="menu-header">
+                <h2><i class="fas fa-tachometer-alt"></i> Panel de Control</h2>
+                <div class="current-time" id="menuCurrentTime"></div>
+            </div>
+            <div class="menu-grid">
+                <button class="menu-item" id="newSignatureBtn">
+                    <i class="fas fa-signature"></i>
+                    <span>Firmar Hoy</span>
+                    <small>Registrar jornada actual</small>
+                </button>
+                <button class="menu-item" id="pendingSignaturesBtn">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Firmas Pendientes</span>
+                    <small>Ver días sin firmar</small>
+                </button>
+                <button class="menu-item" id="completedSignaturesBtn">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Firmas Completadas</span>
+                    <small>Ver historial</small>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Autenticación para menú -->
+        <div class="auth-screen" id="authScreen" style="display: none;">
+            <div class="auth-content">
+                <h2><i class="fas fa-shield-alt"></i> Autenticación Requerida</h2>
+                <p>Ingresa tus credenciales para acceder al panel de gestión</p>
+                <!-- Mensajes de estado para autenticación -->
+                <div class="status-message" id="authStatusMessage"></div>
+                
+                <form class="form" id="authForm">
+                    <div class="form-group">
+                        <label for="authTrabajador">
+                            <i class="fas fa-user"></i>
+                            Trabajador
+                        </label>
+                        <select id="authTrabajador" name="authTrabajador" required>
+                            <option value="">- Selecciona tu nombre -</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="authPassword">
+                            <i class="fas fa-lock"></i>
+                            Contraseña
+                        </label>
+                        <input type="password" id="authPassword" name="authPassword" placeholder="Ingresa tu contraseña" required>
+                        <div class="password-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="rememberPassword">
+                                <span class="checkmark"></span>
+                                Recordar contraseña
+                            </label>
+                        </div>
+                    </div>
+                    <div class="auth-buttons">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Acceder al Panel
+                        </button>
+                        <button type="button" class="btn-secondary" id="backToSignBtn">
+                            <i class="fas fa-arrow-left"></i>
+                            Volver a Firmar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Pantalla de firma diaria -->
+        <main class="main-content" id="mainContent" style="display: none;">
+            <div class="content-header">
+                <h2><i class="fas fa-signature"></i> Firma del Día</h2>
+                <button class="btn-secondary" id="menuAccessBtn">
+                    <i class="fas fa-cog"></i>
+                    Panel de Gestión
+                </button>
+            </div>
+            
+            <!-- Mensajes de estado para formulario principal -->
+            <div class="status-message" id="mainStatusMessage"></div>
+            
+            <form class="form" id="registroForm">
+                <div class="form-group">
+                    <label for="trabajador">
+                        <i class="fas fa-user"></i>
+                        Nombre y Apellidos del Trabajador
+                    </label>
+                    <select id="trabajador" name="trabajador" required>
+                        <option value="">- Selecciona tu nombre -</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="dni">
+                        <i class="fas fa-id-card"></i>
+                        DNI Trabajador
+                    </label>
+                    <input type="text" id="dni" name="dni" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="horario">
+                        <i class="fas fa-clock"></i>
+                        Horario Laboral
+                    </label>
+                    <select id="horario" name="horario" required readonly>
+                        <option value="">- Se asignará automáticamente -</option>
+                        <option value="PLANTA EXTERNA: 08:00 - 14:00 / 15:00 - 17:00">PLANTA EXTERNA: 08:00 - 14:00 / 15:00 - 17:00</option>
+                        <option value="OFICINA: 08:00 - 16:00">OFICINA: 08:00 - 16:00</option>
+                    </select>
+                    <small style="color: #64748b; font-size: 0.85rem; margin-top: 5px; display: block;">
+                        <i class="fas fa-info-circle"></i>
+                        Tu horario se asigna automáticamente según tu puesto
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        Contraseña
+                    </label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña personal" required>
+                        <button type="button" class="show-password" id="showPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <small style="color: #64748b; font-size: 0.85rem; margin-top: 5px; display: block;">
+                        <i class="fas fa-info-circle"></i>
+                        Si no recuerdas tu contraseña, contacta con el administrador
+                    </small>
+                </div>
+
+                <div class="signature-section">
+                    <label>
+                        <i class="fas fa-signature"></i>
+                        Firma Digital
+                    </label>
+                    <div class="signature-container">
+                        <canvas id="signatureCanvas" width="400" height="150"></canvas>
+                        <button type="button" class="btn-secondary" id="clearSignature">
+                            <i class="fas fa-eraser"></i>
+                            Limpiar Firma
+                        </button>
+                    </div>
+                    <small style="color: #64748b; font-size: 0.85rem; margin-top: 5px; display: block;">
+                        <i class="fas fa-info-circle"></i>
+                        Firma usando el ratón o tu dedo en dispositivos táctiles
+                    </small>
+                </div>
+
+                <div class="declaration">
+                    <h3><i class="fas fa-balance-scale"></i> Declaración Legal</h3>
+                    <p>"Declaro que, en virtud de la Ley 8/1980, de 10 de marzo, del Estatuto de los Trabajadores, así como de la normativa vigente sobre registro de jornada laboral, procedo a firmar y confirmar que las horas trabajadas han sido registradas correctamente en el presente formulario. Firmo para constancia de que las horas consignadas en este registro corresponden a las realizadas durante mi jornada laboral. Acepto que la información proporcionada sea almacenada conforme a la legislación laboral vigente."</p>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    <i class="fas fa-signature"></i>
+                    Firmar y Registrar
+                </button>
+            </form>
+        </main>
+
+        <!-- Pantalla de firmas pendientes -->
+        <div class="pending-signatures-screen" id="pendingSignaturesScreen" style="display: none;">
+            <div class="content-header">
+                <h2><i class="fas fa-calendar-check"></i> Firmas Pendientes</h2>
+                <button class="btn-secondary" id="backToMenuBtn1">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al Menú
+                </button>
+            </div>
+            <div class="pending-content">
+                <div class="user-info" id="pendingUserInfo"></div>
+                <div class="pending-list" id="pendingList"></div>
+            </div>
+        </div>
+
+        <!-- Pantalla de firmas completadas -->
+        <div class="completed-signatures-screen" id="completedSignaturesScreen" style="display: none;">
+            <div class="content-header">
+                <h2><i class="fas fa-folder-open"></i> Firmas Completadas</h2>
+                <button class="btn-secondary" id="backToMenuBtn2">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al Menú
+                </button>
+            </div>
+            <div class="completed-content">
+                <div class="user-info" id="completedUserInfo"></div>
+                <div class="completed-list" id="completedList"></div>
+            </div>
+        </div>
+
+        <!-- Modal para firma de día específico -->
+        <div class="modal" id="signSpecificDayModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-calendar-day"></i> Firmar Día Específico</h3>
+                    <button class="close-modal" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="day-info" id="modalDayInfo"></div>
+                    <div class="signature-section">
+                        <label>
+                            <i class="fas fa-signature"></i>
+                            Firma Digital
+                        </label>
+                        <div class="signature-container">
+                            <canvas id="modalSignatureCanvas" width="400" height="150"></canvas>
+                            <button type="button" class="btn-secondary" id="clearModalSignature">
+                                <i class="fas fa-eraser"></i>
+                                Limpiar Firma
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="btn-primary" id="confirmSignature">
+                            <i class="fas fa-check"></i>
+                            Confirmar Firma
+                        </button>
+                        <button class="btn-secondary" id="cancelSignature">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="demo-app.js"></script>
+</body>
+</html>
