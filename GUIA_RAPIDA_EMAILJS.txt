@@ -1,0 +1,130 @@
+═══════════════════════════════════════════════════════════════
+  GUÍA RÁPIDA: CONFIGURACIÓN DE EMAILJS
+  Sistema de Registro Horario - Redes Carreras SL v1.0.0
+═══════════════════════════════════════════════════════════════
+
+📧 PASO 1: CREAR CUENTA EMAILJS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Ir a: https://www.emailjs.com/
+2. Clic en "Sign Up"
+3. Registrarse con email
+4. Verificar email
+
+═══════════════════════════════════════════════════════════════
+
+📬 PASO 2: CONFIGURAR SERVICIO DE EMAIL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Dashboard → "Email Services"
+2. "Add New Service"
+3. Seleccionar "Gmail"
+4. Conectar cuenta: instalaciones@redescarreras.es
+5. Copiar Service ID
+   Ejemplo: service_abc1234
+
+═══════════════════════════════════════════════════════════════
+
+📝 PASO 3: CREAR PLANTILLA DE EMAIL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. "Email Templates" → "Create New Template"
+
+2. Subject:
+   {{subject}}
+
+3. Content:
+   Nuevo Registro Horario Laboral
+   
+   Trabajador: {{trabajador}}
+   DNI: {{dni}}
+   Horario: {{horario}}
+   Fecha: {{fecha}}
+   Hora: {{hora}}
+   
+   {{message}}
+
+4. To Email:
+   {{to_email}}
+
+5. ✅ Habilitar "Allow attachments"
+
+6. Copiar Template ID
+   Ejemplo: template_xyz5678
+
+═══════════════════════════════════════════════════════════════
+
+🔑 PASO 4: OBTENER PUBLIC KEY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Account → General
+2. Copiar Public Key
+   Ejemplo: aBcDeFgHiJkLmNoPqRs
+
+═══════════════════════════════════════════════════════════════
+
+⚙️ PASO 5: CONFIGURAR APLICACIÓN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A. ARCHIVOS HTML (index-admin.html y demo-admin.html):
+   
+   BUSCAR:
+   emailjs.init("YOUR_PUBLIC_KEY");
+   
+   REEMPLAZAR CON:
+   emailjs.init("aBcDeFgHiJkLmNoPqRs");
+
+
+B. ARCHIVOS JS (app-admin.js y demo-app-admin.js):
+   
+   BUSCAR:
+   await emailjs.send(
+       'YOUR_SERVICE_ID',
+       'YOUR_TEMPLATE_ID',
+       templateParams
+   );
+   
+   REEMPLAZAR CON:
+   await emailjs.send(
+       'service_abc1234',
+       'template_xyz5678',
+       templateParams
+   );
+
+═══════════════════════════════════════════════════════════════
+
+✅ VERIFICACIÓN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Abrir index-admin.html
+2. Seleccionar trabajador y firmar
+3. Verificar mensaje de éxito
+4. Revisar consola (F12): "✅ Email enviado exitosamente"
+5. Verificar bandeja de instalaciones@redescarreras.es
+
+═══════════════════════════════════════════════════════════════
+
+⚠️ LÍMITES PLAN GRATUITO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- 200 emails/mes (gratis)
+- Para más emails, actualizar a plan de pago
+
+═══════════════════════════════════════════════════════════════
+
+📋 ARCHIVOS A MODIFICAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ index-admin.html    (línea ~680)
+✅ app-admin.js        (línea ~1510)
+✅ demo-admin.html     (línea ~680)
+✅ demo-app-admin.js   (línea ~1610)
+
+═══════════════════════════════════════════════════════════════
+
+Desarrollada por: Alexander Arroyave
+Para: Redes Carreras SL
+Versión: 1.0.0
+Fecha: 2025-10-21
+
+═══════════════════════════════════════════════════════════════
